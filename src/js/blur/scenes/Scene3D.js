@@ -1,11 +1,5 @@
 /*
  * Author: Harry Northover
- * 			- harrynorthover.com
- * Description:
- * The scene used to hold all 3D objects.
- *
- * Edits:
- * None.
  */
 
 BLUR.Scene3D = function () {
