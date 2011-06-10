@@ -1,0 +1,1 @@
+var SKETCHPAD = SKETCHPAD || {};
