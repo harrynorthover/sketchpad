@@ -15,10 +15,13 @@
 
 <!-- Include all the necessary BLUR 3D Engine files. -->
 <script type="text/javascript" src="js/blur/Blur.js"></script>
-<script type="text/javascript" src="js/blur/materials/RGBColour.js"></script>
-<script type="text/javascript" src="js/blur/core/Vertex3.js"></script>
-<script type="text/javascript" src="js/blur/core/Point2D.js"></script>
-<script type="text/javascript" src="js/blur/objects/primitives/Line3D.js"></script>
+<script type="text/javascript" src="js/blur/core/display/Color.js"></script>
+<script type="text/javascript" src="js/blur/materials/BasicColorMaterial.js"></script>
+<script type="text/javascript" src="js/blur/core/math/Vector.js"></script>
+<script type="text/javascript" src="js/blur/core/math/Matrix4.js"></script>
+<script type="text/javascript" src="js/blur/core/display/Point2D.js"></script>
+<script type="text/javascript" src="js/blur/core/display/Object3D.js"></script>
+<script type="text/javascript" src="js/blur/objects/primitives/Line.js"></script>
 <script type="text/javascript" src="js/blur/objects/primitives/Particle.js"></script>
 <script type="text/javascript" src="js/blur/objects/primitives/Text2D.js"></script>
 <script type="text/javascript" src="js/blur/camera/Camera3D.js"></script>
@@ -36,6 +39,8 @@
 
 <script type="text/javascript">
 jQuery(document).ready(function() {
+	app.allowKeyboardEvents = true;
+	
 	$('#hint, #error').click(function() {
 		$('#hint').fadeOut('slow');
 	});
@@ -73,6 +78,7 @@ jQuery(document).ready(function() {
 	});
 	
 	jQuery(document).keypress(function(e) {
+		console.log('keypress - app.allowKeyboardEvents:' + app.allowKeyboardEvents);
 		if(app.allowKeyboardEvents) 
 			app.onKeyPressHandler(e);
 	});

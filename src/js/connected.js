@@ -50,11 +50,11 @@ SKETCHPAD.App = function() {
 		net.init();
 		terminal.setNetworkInterface(net);
 
-		localCursor 			= new BLUR.Particle( new BLUR.Vertex3( mouseX, mouseY, 1 ), 4 );
-		localCursor.material 	= new BLUR.RGBColour(24,116,205, 0.3);
+		localCursor 			= new BLUR.Particle( new BLUR.Vector( mouseX, mouseY, 1 ), 4 );
+		localCursor.material 	= new BLUR.BasicColorMaterial(new BLUR.Color(24,116,205), 0.3);
 
-		nicknameObj 			= new BLUR.Text2D( "", new BLUR.Vertex3( localCursor.position.x + 10, localCursor.position.y, localCursor.position.z) );
-		nicknameObj.material 	= new BLUR.RGBColour(245,245,245,0.7);
+		nicknameObj 			= new BLUR.Text2D( "", new BLUR.Vector( localCursor.position.x + 10, localCursor.position.y, localCursor.position.z) );
+		nicknameObj.material 	= new BLUR.BasicColorMaterial(new BLUR.Color(245,245,245),0.7);
 		// nicknameObj.text		= net.id ? net.id : '';
 
 		scene.addObject(localCursor);
@@ -109,25 +109,23 @@ SKETCHPAD.App = function() {
 
 	this.drawLine = function(x, y, z)
 	{
+		//console.log('Drawing Line... [x:' + x + ' y:' + y + ' z:' + z + ']');
 		/* Gets the initial mouse point to draw the line from. If a previous line
 		 * has been draw (eg, the mouse button has not been lifted) then the position 
 		 * used is just the last object to be added to the scene.
 		 */
-		var p1 					= (shouldDrawFromStart) ? new BLUR.Vertex3(mouseX - (window.innerWidth/2), 
-																		   mouseY - (window.innerHeight/2 - heightOffset/2), z) : localLines[localLines.length - 1].point2;
+		var p1 					= (shouldDrawFromStart) ? new BLUR.Vector(mouseX - (window.innerWidth/2), mouseY - (window.innerHeight/2 - heightOffset/2), z) : localLines[localLines.length - 1].to;
+		var line 				= new BLUR.Line( lineThickness );
+		line.setPosition(p1, new BLUR.Vector( x - (window.innerWidth/2), y - (window.innerHeight/2 - heightOffset/2), z));
 		
-		var line 				= new BLUR.Line3D( p1, new BLUR.Vertex3( x - (window.innerWidth/2), 
-																		 y - (window.innerHeight/2 - heightOffset/2), 
-																		 z), lineThickness );
-		
-		/*var d1					= line.point1.x - line.point1.x;
+		/*var d1				= line.point1.x - line.point1.x;
 		var d2					= line.point1.y - line.point2.y;
 		var alpha 				= Math.round(Math.sqrt((d1*d1) + (d2*d2)));*/
 				
-		line.material			= new BLUR.RGBColour( lineMaterial[0], 
-													  lineMaterial[1], 
-													  lineMaterial[2], 
-													  /*alpha*/ lineAlpha );
+		line.material			= new BLUR.BasicColorMaterial( new BLUR.Color(lineMaterial[0], 
+													  						  lineMaterial[1], 
+													  						  lineMaterial[2]), 
+													  						  lineAlpha );
 
 		scene.addObject(line);
 		localLines.push(line);
@@ -141,10 +139,10 @@ SKETCHPAD.App = function() {
 	this.invert = function() {
 		for(var i = 0; i < scene.objects.length; ++i)
 		{
-			if(scene.objects[i].type == "BLUR.Line3D")
+			if(scene.objects[i].type == "BLUR.Line")
 			{
-				scene.objects[i].point1 = new BLUR.Vertex3( scene.objects[i].point1.y, scene.objects[i].point1.x, scene.objects[i].point1.z );
-				scene.objects[i].point2 = new BLUR.Vertex3( scene.objects[i].point2.y, scene.objects[i].point2.x, scene.objects[i].point2.z );
+				scene.objects[i].point1 = new BLUR.Vector( scene.objects[i].point1.y, scene.objects[i].point1.x, scene.objects[i].point1.z );
+				scene.objects[i].point2 = new BLUR.Vector( scene.objects[i].point2.y, scene.objects[i].point2.x, scene.objects[i].point2.z );
 			}
 		}
 	};
@@ -156,7 +154,7 @@ SKETCHPAD.App = function() {
 		 */
 		for(var j = 0; j <= 15; ++j) {
 			for(var i = 0; i < scene.objects.length; ++i) {
-				if(scene.objects[i].type == 'BLUR.Line3D')
+				if(scene.objects[i].type == 'BLUR.Line')
 					scene.removeObject(scene.objects[i]);
 			}
 		}
@@ -167,12 +165,12 @@ SKETCHPAD.App = function() {
 		mouseX 					= Math.round(x);
 		mouseY 					= Math.round(y);
 
-		localCursor.position 	= new BLUR.Vertex3(Math.round(mouseX - (window.innerWidth/2)), 
-												   Math.round(mouseY - (window.innerHeight/2 - heightOffset/2)), 
-												   1);
-		nicknameObj.position 	= new BLUR.Vertex3(localCursor.position.x + 10, 
-											       localCursor.position.y, 
-											       localCursor.position.z);
+		localCursor.position 	= new BLUR.Vector(Math.round(mouseX - (window.innerWidth/2)), 
+												  Math.round(mouseY - (window.innerHeight/2 - heightOffset/2)), 
+												  1);
+		nicknameObj.position 	= new BLUR.Vector(localCursor.position.x + 10, 
+											      localCursor.position.y, 
+											      localCursor.position.z);
 
 		net.updateCursorPosition(localCursor.position.x, 
 								 localCursor.position.y);
@@ -245,6 +243,8 @@ SKETCHPAD.App = function() {
 
 	this.onKeyPressHandler = function(e) {
 		e.preventDefault();
+		
+		console.log(e.charCode);
 
 		switch(e.charCode) {
 			case 100:

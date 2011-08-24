@@ -9,7 +9,6 @@ BLUR.Line3D = function( p1, p2, t ) {
 	rotation = [0,0]; 
 
 	this.rotateY = function(angle) {
-		console.log('rotateY: ' + angle);
 		rotation[0] = angle;
 
 		var temp_p1 = new BLUR.Vertex3(this.point1.x, this.point1.y, this.point1.z);

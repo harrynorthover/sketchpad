@@ -7,7 +7,7 @@
 SKETCHPAD.Network = function (b,s,c) {
 	var self = this;
 
-	this.host = (window.location.host == 'sketchpad.harrynorthover.com') ? "ws://184.106.171.199:8002/sketchpad/server.js" : "ws://192.168.0.4:8002/sketchpad/src/server/server.js";
+	this.host = (window.location.host == 'sketchpad.harrynorthover.com') ? "ws://184.106.171.199:8002/sketchpad/server.js" : "ws://localhost:8002/sketchpad/src/server/server.js";
 
 	this.users 			= [];
 	//this.heightOffset 	= 53;
@@ -20,13 +20,13 @@ SKETCHPAD.Network = function (b,s,c) {
 		this.id 		= id;
 		this.username 	= id;
 		this.lines 		= [];
-		this.cursor 	= new BLUR.Particle( new BLUR.Vertex3(self.connected.randomNumber(200,200),
+		this.cursor 	= new BLUR.Particle( new BLUR.Vector(self.connected.randomNumber(200,200),
 														  	  self.connected.randomNumber(200,200),
 														  	  self.connected.randomNumber(200,200)), 6 );
-		this.cursor.material = new BLUR.RGBColour(220,20,60,0.5);
+		this.cursor.material = new BLUR.BasicColorMaterial( new BLUR.Color( 220,20,60 ),0.5);
 		
-		this.label 		= new BLUR.Text2D( this.username, this.cursor.position );
-		this.label.material = new BLUR.RGBColour(245,245,245,0.5);
+		this.label = new BLUR.Text2D( this.username, this.cursor.position );
+		this.label.material = new BLUR.BasicColorMaterial( new BLUR.Color( 245,245,245 ),0.5);
 
 		this.currentRotation = 0;
 
@@ -74,10 +74,10 @@ SKETCHPAD.Network = function (b,s,c) {
 
                 	var user = self.getUser( id, false );
 
-                	var p1 = (shouldDrawFromStart == 'true') ? new BLUR.Vertex3(tmpMsg[0], tmpMsg[1], tmpMsg[2]) : user.lines[user.lines.length-1].point2;
-                	var p2 = new BLUR.Vertex3(tmpMsg[3], tmpMsg[4], tmpMsg[5]);
+                	var p1 = (shouldDrawFromStart == 'true') ? new BLUR.Vector(tmpMsg[0], tmpMsg[1], tmpMsg[2]) : user.lines[user.lines.length-1].to;
+                	var p2 = new BLUR.Vector(tmpMsg[3], tmpMsg[4], tmpMsg[5]);
 
-                    var line = new BLUR.Line3D(p1, p2, tmpMsg[7]);
+                    var line = new BLUR.Line(p1, p2, tmpMsg[7]);
                     line.material = tmpMsg[6];
 
                     // add the newly created line to the scene.
@@ -92,8 +92,8 @@ SKETCHPAD.Network = function (b,s,c) {
 
                 	var user = self.getUser( id, false );
 
-                	user.cursor.position = new BLUR.Vertex3(coords[0], coords[1], 1);
-                    user.cursor.material = new BLUR.RGBColour(176,23,31,0.3);
+                	user.cursor.position = new BLUR.Vector(coords[0], coords[1], 1);
+                    user.cursor.material = new BLUR.BasicColorMaterial( new BLUR.Color(176,23,31),0.3);
                     user.label.position = user.cursor.position;
                     user.label.text = username;
 
@@ -177,39 +177,33 @@ SKETCHPAD.Network = function (b,s,c) {
     };
 
     this.addLine = function (line) {
-        var p1 = line.point1,
-       		p2 = line.point2,
-        	t = line.thickness,
-        	r = line.rotation;
-        
-        console.log(r);
-        
-        console.log('rotation:' + r);
+        var p1 = line.position,
+       		p2 = line.to,
+        	t = line.thickness/*,
+        	r = line.rotation*/;
 
-        var msg = "DRAW_LINE:" + Math.round(p1.x) + '_' + Math.round(p1.y) + '_' + Math.round(p1.z) + '_' + Math.round(p2.x) + '_' + Math.round(p2.y) + '_' + Math.round(p2.z) + '_' + line.material.toString() + '_' + t + '_' + r[0];
-
-        socket.send(msg);
+        var msg = "DRAW_LINE:" + Math.round(p1.x) + '_' + Math.round(p1.y) + '_' + Math.round(p1.z) + '_' + Math.round(p2.x) + '_' + Math.round(p2.y) + '_' + Math.round(p2.z) + '_' + line.material.toString() + '_' + t /*+ '_' + r[0]*/;
+        this.send(msg);
     };
 
     this.updateCursorPosition = function(x,y) {
     	var msg = 'UPDATE_CURSOR:' + x + '_' + y;
-    	try { socket.send(msg); } catch (exp){}
+    	this.send(msg);
     };
 
     this.updateNickname = function(newName) {
-    	socket.send('UPDATE_NICKNAME:' + newName);
+    	this.send('UPDATE_NICKNAME:' + newName);
     };
 
     this.sendMessage = function(message) {
-    	socket.send('NEW_MESSAGE:' + message);
+    	this.send('NEW_MESSAGE:' + message);
     };
 
     this.initNewLine = function() {
-    	socket.send('INIT_NEW_LINE:');
+    	this.send('INIT_NEW_LINE:');
     };
     
-    // DEV ONLY
-    this.sendCommand = function(c) {
-    	socket.send(c);
+    this.send = function(data) {
+    	try { socket.send(data); } catch(exp) { console.log('* Socket Exception: ' + exp.message); } 
     };
 };

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry excluding="blur/core/|blur/camera/|ui/js/|blur/renderers/|ui/development-bundle/ui/|ui/colorpicker/js/|external/|blur/|ui/development-bundle/ui/i18n/|blur/materials/|ui/development-bundle/ui/minified/|ui/development-bundle/external/|blur/objects/primitives/|blur/scenes/" kind="src" path="src/js"/>
+	<classpathentry excluding="core/|camera/|renderers/|materials/|objects/primitives/|scenes/" kind="src" path="src/js/blur"/>
+	<classpathentry kind="src" path="src/js/blur/camera"/>
+	<classpathentry kind="src" path="src/js/blur/core"/>
+	<classpathentry kind="src" path="src/js/blur/materials"/>
+	<classpathentry kind="src" path="src/js/blur/objects/primitives"/>
+	<classpathentry kind="src" path="src/js/blur/renderers"/>
+	<classpathentry kind="src" path="src/js/blur/scenes"/>
+	<classpathentry kind="src" path="src/js/external"/>
+	<classpathentry kind="src" path="src/js/ui/colorpicker/js"/>
+	<classpathentry kind="src" path="src/js/ui/development-bundle/external"/>
+	<classpathentry excluding="i18n/|minified/" kind="src" path="src/js/ui/development-bundle/ui"/>
+	<classpathentry kind="src" path="src/js/ui/development-bundle/ui/i18n"/>
+	<classpathentry kind="src" path="src/js/ui/development-bundle/ui/minified"/>
+	<classpathentry kind="src" path="src/js/ui/js"/>
+	<classpathentry kind="src" path="src/server"/>
+	<classpathentry kind="con" path="org.eclipse.wst.jsdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="output" path=""/>
+</classpath>

@@ -20,49 +20,41 @@ BLUR.CanvasRenderer = function ( scene, camera ) {
 
 	_ctx.translate(HALF_WIDTH, HALF_HEIGHT);
 
-
-	this.render = function( scene, camera ) {
-		// if autoclear is set to true, clear the screen before the next scene is rendered.
-		if(_autoClear)
-			this.clear();
-
-		if(scene.visible) {
-			for(var i = 0; i < scene.objects.length; ++i)
-			{
-				var currentObj = scene.objects[i];
-
-				// render the object.
-				this.renderObject(currentObj);
-
-				// check for children and render any.
-				if(currentObj.children.length > 0 && currentObj.visible)
-					for( var j = 0; j < currentObj.children.length; ++j ) 
-							this.renderObject(currentObj.children[j]);
-			}
-		}
+	this.toImage = function() {
+		var img = _canvas.toDataURL('image/png');
+		return img;
 	};
 
-	this.renderObject = function( o ) {
-		if(o.visible) {
-			switch(o.type)
+	this.render = function( scene, camera ) {
+		//_canvas.width 	= _WIDTH;
+		//_canvas.height 	= _HEIGHT;
+
+		// if autoclear is set to true, clear the screen before the next scene is rendered.
+		if(_autoClear) this.clear();
+
+		for(var i = 0; i < scene.objects.length; ++i)
+		{
+			var currentObj = scene.objects[i];
+			switch(currentObj.type)
 			{
-				case 'BLUR.Particle':
-					this.drawParticle(o);
-					break;
-				case 'BLUR.Line':
-					this.drawLine(o);
-					break;
-				case 'BLUR.Plane':
-					this.drawFace(o);
-					break;
+			case 'BLUR.Text2D':
+				this.drawText(currentObj);
+				break;
+			case 'BLUR.Particle':
+				this.drawParticle(currentObj);
+				break;
+			case 'BLUR.Line3D':
+				this.drawLine(currentObj);
+				break;
+			case 'BLUR.Plane':
+				this.drawFace(currentObj);
+				break;
 			}
 		}
 	};
 
 	this.drawTriangle = function( tri ) {
-		/*
-		 * TODO: Finish drawTriangle.
-		 */
+
 	};
 
 	this.drawParticle = function( particle ) {
@@ -86,15 +78,13 @@ BLUR.CanvasRenderer = function ( scene, camera ) {
 			_ctx.beginPath();
 			_ctx.arc( x, y, particle.radius, 0, Math.PI * 2, true );
 			_ctx.closePath();
-			_ctx.fillStyle = particle.material.toString();
+			_ctx.fillStyle 	= particle.material.toString();
 			_ctx.fill();
 		}
 	};
 
 	this.drawLine = function( line ) {
-		points = [];
-		points.push(line.position.convertTo2D( _fieldOfV ));
-		points.push(line.to.convertTo2D( _fieldOfV ));
+		points = [line.point1.convertTo2D( _fieldOfV ), line.point2.convertTo2D( _fieldOfV )];
 
 		_ctx.lineWidth = line.thickness;
 		_ctx.beginPath();
@@ -142,6 +132,13 @@ BLUR.CanvasRenderer = function ( scene, camera ) {
 			_ctx.fillStyle = face.material.toString();
 			_ctx.fill();
 		}
+	};
+
+	this.drawText = function(obj) {
+		pos = obj.position.convertTo2D( _fieldOfV );
+		if(obj.material != undefined) _ctx.fillStyle = obj.material.toString();
+		else _ctx.fillStyle = "Black";
+		_ctx.fillText(obj.text, pos.x, pos.y);
 	};
 
 	this.setDimensions = function ( width, height ) {

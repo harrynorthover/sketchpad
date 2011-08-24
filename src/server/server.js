@@ -1,18 +1,15 @@
-var sys = require("sys");
-var ws = require('websocket-server');
+var sys 			= require("sys");
+var ws 				= require('websocket-server');
 
-var server = ws.createServer({debug: true});
+var server 			= ws.createServer({debug: true});
 
-var users = [];
+var users 			= [];
 var welcome_message = 'Welcome! I hope you enjoy this tech demo. Just click to draw, or sit back and watch others. Any bugs/comments please email me@harrynorthover.com';
 
-var totalUsers = 0;
+var totalUsers 		= 0;
+var port 			= 8002;
 
 server.addListener("connection", function(conn) {
-	// When a message is received, broadcast it too all the clients
-	// that are currently connected.
-	// server.send(conn.id, 'NEW_SERVER_MESSAGE:' + welcome_message);
-
 	totalUsers 		   += 1;
 	conn.username 		= 'User' + totalUsers;
 	conn.lastPosition 	= [0,0,0];
@@ -27,12 +24,11 @@ server.addListener("connection", function(conn) {
 
 			case 'DRAW_LINE':
 				var data = msg[1].split('_');
-				var lp = conn.lastPosition;
+				//var lp = conn.lastPosition;
 				var coords = "DRAW_LINE:";
 
 				coords += data[0] + '_' + data[1] + '_' + data[2] + '_' + data[3] + '_' + data[4] + '_' + data[5] + "_" + data[6] + '_' + data[7] + '_' + conn.id;
 
-				// send coords here.
 				if(conn.drawFromPreviousLine) {
 					coords += '_false';
 				} else {
@@ -89,4 +85,4 @@ server.addListener("disconnected", function(conn){
 	console.log("["+conn.id+"] disconnected.");
 });
 
-server.listen(8002);
+server.listen(port);

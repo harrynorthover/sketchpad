@@ -64,9 +64,9 @@ SKETCHPAD.Terminal = function() {
 			this.updateConsole(drawing+nickname+cursor+message);
 			break;
 		default:
-			net.sendCommand(c);
+			net.send(c);
 			this.updateConsole(c);
 			break;
 		}
 	};
-}
+};
