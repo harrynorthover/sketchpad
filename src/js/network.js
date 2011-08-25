@@ -54,6 +54,8 @@ SKETCHPAD.Network = function (b,s,c) {
             	if(self.console != null) 
             		self.console.updateConsole(msg.data);
             	
+            	console.log('m: ' + msg.data);
+            	
             	var m = msg.data.split(':');
                 switch(m[0]) {
 
@@ -69,16 +71,18 @@ SKETCHPAD.Network = function (b,s,c) {
                 	self.lineIsBeingDraw = true;
                 	var tmpMsg = m[1].split('_');
 
-                	var id = tmpMsg[8];
-                	var shouldDrawFromStart = tmpMsg[9];
+                	var id = tmpMsg[11];
+                	var shouldDrawFromStart = tmpMsg[12];
 
                 	var user = self.getUser( id, false );
 
                 	var p1 = (shouldDrawFromStart == 'true') ? new BLUR.Vector(tmpMsg[0], tmpMsg[1], tmpMsg[2]) : user.lines[user.lines.length-1].to;
                 	var p2 = new BLUR.Vector(tmpMsg[3], tmpMsg[4], tmpMsg[5]);
+                	
+                    var m = new BLUR.BasicColorMaterial( new BLUR.Color( tmpMsg[6], tmpMsg[7], tmpMsg[8] ) , tmpMsg[9] );
 
-                    var line = new BLUR.Line(p1, p2, tmpMsg[7]);
-                    line.material = tmpMsg[6];
+                    var line = new BLUR.Line(p1, p2, tmpMsg[10]);
+                    line.material = m;
 
                     // add the newly created line to the scene.
                     self.scene.addObject(line);
@@ -181,8 +185,13 @@ SKETCHPAD.Network = function (b,s,c) {
        		p2 = line.to,
         	t = line.thickness/*,
         	r = line.rotation*/;
-
-        var msg = "DRAW_LINE:" + Math.round(p1.x) + '_' + Math.round(p1.y) + '_' + Math.round(p1.z) + '_' + Math.round(p2.x) + '_' + Math.round(p2.y) + '_' + Math.round(p2.z) + '_' + line.material.toString() + '_' + t /*+ '_' + r[0]*/;
+        
+        var mat = line.material.color.r + '_' + line.material.color.g + '_' + line.material.color.b + '_' + line.material.alpha;
+        console.log('mat: ' + mat);
+        
+        var msg = "DRAW_LINE:" + Math.round(p1.x) + '_' + Math.round(p1.y) + '_' + Math.round(p1.z) + '_' + Math.round(p2.x) + '_' + Math.round(p2.y) + '_' + Math.round(p2.z) + '_' + mat + '_' + t /*+ '_' + r[0]*/;
+        console.log('msg: ' + msg);
+        
         this.send(msg);
     };
 

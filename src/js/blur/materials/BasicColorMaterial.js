@@ -3,7 +3,7 @@ BLUR.BasicColorMaterial = function(c,a) {
 	this.alpha = a;
 
 	this.toString = function() {
-		return "rgba(" + this.color.r + "," + this.color.g + "," + this.color.b + "," + this.alpha + ")";
+		return "BLUR.BasicColorMaterial( " + this.color.toString() + ", " + this.alpha + ")";
 	};
 
 	this.type = 'BLUR.BasicColorMaterial';

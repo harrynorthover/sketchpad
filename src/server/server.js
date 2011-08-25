@@ -23,11 +23,12 @@ server.addListener("connection", function(conn) {
 				break;
 
 			case 'DRAW_LINE':
+				// length: 11.
 				var data = msg[1].split('_');
 				//var lp = conn.lastPosition;
 				var coords = "DRAW_LINE:";
-
-				coords += data[0] + '_' + data[1] + '_' + data[2] + '_' + data[3] + '_' + data[4] + '_' + data[5] + "_" + data[6] + '_' + data[7] + '_' + conn.id;
+				
+				coords += data[0] + '_' + data[1] + '_' + data[2] + '_' + data[3] + '_' + data[4] + '_' + data[5] + '_' + data[6] + '_' + data[7] + '_' + data[8] + '_' + data[9] + '_' + data[9] + '_' + conn.id;
 
 				if(conn.drawFromPreviousLine) {
 					coords += '_false';

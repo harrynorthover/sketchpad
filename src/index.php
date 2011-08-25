@@ -41,7 +41,7 @@
 <div id='serverOutput'>
 </div>
 
-<div style='color: white; position: absolute; bottom: 102px; right: 175px; font-size: 10px; opacity: 0.3; display:none' id='serverHelp'>
+<div style='color: white; position: absolute; bottom: 102px; right: 180px; font-size: 10px; opacity: 0.3; display:none' id='serverHelp'>
 	<p>To enable the console, type <b>enable</b>. To disable, type <b>disable</b> (type <b>help</b> for more)</p>
 </div>
 

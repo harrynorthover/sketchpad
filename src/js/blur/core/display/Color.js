@@ -13,7 +13,7 @@ BLUR.Color = function( r,g,b ) {
 	};
 
 	this.toString = function() {
-		return this.type + " [r: " + this.r + ", g: " + this.g + ", b: " + this.b + "]";
+		return this.type + " (r: " + this.r + ", g: " + this.g + ", b: " + this.b + ")";
 	};
 
 	this.type = 'BLUR.Color';

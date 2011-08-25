@@ -78,7 +78,6 @@ jQuery(document).ready(function() {
 	});
 	
 	jQuery(document).keypress(function(e) {
-		console.log('keypress - app.allowKeyboardEvents:' + app.allowKeyboardEvents);
 		if(app.allowKeyboardEvents) 
 			app.onKeyPressHandler(e);
 	});
