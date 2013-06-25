@@ -103,13 +103,13 @@ SKETCHPAD.App = function() {
 		}
 	};
 
-	this.randomNumber = function(min, max) {
+	this.randomNumber = function(min, max)
+    {
 		return ( (Math.random() * (max - min) ) + min);
 	};
 
 	this.drawLine = function(x, y, z)
 	{
-		//console.log('Drawing Line... [x:' + x + ' y:' + y + ' z:' + z + ']');
 		/* Gets the initial mouse point to draw the line from. If a previous line
 		 * has been draw (eg, the mouse button has not been lifted) then the position 
 		 * used is just the last object to be added to the scene.
@@ -117,11 +117,7 @@ SKETCHPAD.App = function() {
 		var p1 					= (shouldDrawFromStart) ? new BLUR.Vector(mouseX - (window.innerWidth/2), mouseY - (window.innerHeight/2 - heightOffset/2), z) : localLines[localLines.length - 1].to;
 		var line 				= new BLUR.Line( lineThickness );
 		line.setPosition(p1, new BLUR.Vector( x - (window.innerWidth/2), y - (window.innerHeight/2 - heightOffset/2), z));
-		
-		/*var d1				= line.point1.x - line.point1.x;
-		var d2					= line.point1.y - line.point2.y;
-		var alpha 				= Math.round(Math.sqrt((d1*d1) + (d2*d2)));*/
-				
+
 		line.material			= new BLUR.BasicColorMaterial( new BLUR.Color(lineMaterial[0], 
 													  						  lineMaterial[1], 
 													  						  lineMaterial[2]), 
@@ -141,8 +137,8 @@ SKETCHPAD.App = function() {
 		{
 			if(scene.objects[i].type == "BLUR.Line")
 			{
-				scene.objects[i].point1 = new BLUR.Vector( scene.objects[i].point1.y, scene.objects[i].point1.x, scene.objects[i].point1.z );
-				scene.objects[i].point2 = new BLUR.Vector( scene.objects[i].point2.y, scene.objects[i].point2.x, scene.objects[i].point2.z );
+				scene.objects[i].position = new BLUR.Vector( scene.objects[i].to.y, scene.objects[i].to.x, scene.objects[i].to.z );
+				scene.objects[i].to = new BLUR.Vector( scene.objects[i].position.y, scene.objects[i].position.x, scene.objects[i].position.z );
 			}
 		}
 	};
@@ -152,8 +148,10 @@ SKETCHPAD.App = function() {
 		 * TODO: Fix this function so that all the scene is cleared with one
 		 * loop instead of looping through this.
 		 */
-		for(var j = 0; j <= 15; ++j) {
-			for(var i = 0; i < scene.objects.length; ++i) {
+		for(var j = 0; j <= 15; ++j)
+        {
+			for(var i = 0; i < scene.objects.length; ++i)
+            {
 				if(scene.objects[i].type == 'BLUR.Line')
 					scene.removeObject(scene.objects[i]);
 			}

@@ -7,7 +7,7 @@
 SKETCHPAD.Network = function (b,s,c) {
 	var self = this;
 
-	this.host = (window.location.host == 'sketchpad.harrynorthover.com') ? "ws://184.106.171.199:8002/sketchpad/server.js" : "ws://localhost:8002/sketchpad/src/server/server.js";
+	this.host = "http://localhost:8002";
 
 	this.users 			= [];
 	//this.heightOffset 	= 53;
@@ -16,6 +16,9 @@ SKETCHPAD.Network = function (b,s,c) {
 	this.lineIsBeingDraw = false;
 	this.console 		= c;
 
+    lines = [];
+    lastPoint = null;
+
 	var User = function(id) {
 		this.id 		= id;
 		this.username 	= id;
@@ -23,7 +26,7 @@ SKETCHPAD.Network = function (b,s,c) {
 		this.cursor 	= new BLUR.Particle( new BLUR.Vector(self.connected.randomNumber(200,200),
 														  	  self.connected.randomNumber(200,200),
 														  	  self.connected.randomNumber(200,200)), 6 );
-		this.cursor.material = new BLUR.BasicColorMaterial( new BLUR.Color( 220,20,60 ),0.5);
+		this.cursor.material = new BLUR.BasicColorMaterial( new BLUR.Color( 220,20,60 ),1);
 		
 		this.label = new BLUR.Text2D( this.username, this.cursor.position );
 		this.label.material = new BLUR.BasicColorMaterial( new BLUR.Color( 245,245,245 ),0.5);
@@ -43,20 +46,23 @@ SKETCHPAD.Network = function (b,s,c) {
 
     this.init = function () {
         try {
-            socket = new WebSocket(self.host);
+            socket = io.connect(this.host);
 
-            socket.onopen = function (msg) {
+            socket.on('connect', function (msg) {
             	socket.send('GET_ID');
             	self.connected.hideError();
-            };
+            });
 
-            socket.onmessage = function (msg) {
+            socket.on('message', function (msg) {
             	if(self.console != null) 
             		self.console.updateConsole(msg.data);
             	
-            	console.log('m: ' + msg.data);
+            	//console.log('m: ' + msg);
             	
-            	var m = msg.data.split(':');
+            	var m = msg.split(':');
+
+                console.log('TYPE: ', m[0]);
+
                 switch(m[0]) {
 
                 case 'USER_CONNECTED':
@@ -69,28 +75,34 @@ SKETCHPAD.Network = function (b,s,c) {
 
                 case 'DRAW_LINE':
                 	self.lineIsBeingDraw = true;
+
                 	var tmpMsg = m[1].split('_');
-
                 	var id = tmpMsg[11];
-                	var shouldDrawFromStart = tmpMsg[12];
+                	var shouldDrawFromStart = tmpMsg[tmpMsg.length-1];
 
-                	var user = self.getUser( id, false );
-
-                	var p1 = (shouldDrawFromStart == 'true') ? new BLUR.Vector(tmpMsg[0], tmpMsg[1], tmpMsg[2]) : user.lines[user.lines.length-1].to;
+                	var p1 = (shouldDrawFromStart == 'true') ? new BLUR.Vector(tmpMsg[0], tmpMsg[1], tmpMsg[2]) : lastPoint;
                 	var p2 = new BLUR.Vector(tmpMsg[3], tmpMsg[4], tmpMsg[5]);
-                	
-                    var m = new BLUR.BasicColorMaterial( new BLUR.Color( tmpMsg[6], tmpMsg[7], tmpMsg[8] ) , tmpMsg[9] );
 
-                    var line = new BLUR.Line(p1, p2, tmpMsg[10]);
+                    lastPoint = p2;
+                	
+                    var m = new BLUR.BasicColorMaterial( new BLUR.Color( tmpMsg[6], tmpMsg[7], tmpMsg[8] ), tmpMsg[9] );
+
+                    console.log('Material: ', m);
+
+                    var line = new BLUR.Line(tmpMsg[10]);
                     line.material = m;
+
+                    line.setPosition( p1, p2 );
 
                     // add the newly created line to the scene.
                     self.scene.addObject(line);
-                    user.lines.push(line);
+                    lines.push(line);
+
                 	break;
 
                 case 'UPDATE_CURSOR':
                 	var coords = m[1].split('_');
+                    console.log('CUSOR CORDS: ', coords);
                 	var id = coords[2];
                 	var username = coords[3];
 
@@ -100,6 +112,8 @@ SKETCHPAD.Network = function (b,s,c) {
                     user.cursor.material = new BLUR.BasicColorMaterial( new BLUR.Color(176,23,31),0.3);
                     user.label.position = user.cursor.position;
                     user.label.text = username;
+
+                    console.log('cursor', user.cursor);
 
                 	break;
 
@@ -119,11 +133,11 @@ SKETCHPAD.Network = function (b,s,c) {
                 	self.connected.chat('show');
                 	break;
                 }
-            };
+            });
 
-            socket.onclose = function (msg) {
+            socket.on('close', function (msg) {
             	self.connected.showError();
-            };
+            });
         }
         catch (ex) {
             console.log('EXCEPTION: ' + ex);
@@ -136,6 +150,9 @@ SKETCHPAD.Network = function (b,s,c) {
     	u.init();
     	this.users.push(u);
     	self.connected.updateUserAmount(this.users.length);
+
+        console.log('Adding USer! ', u);
+
     	return this.users.length-1;
     };
 
@@ -213,6 +230,10 @@ SKETCHPAD.Network = function (b,s,c) {
     };
     
     this.send = function(data) {
-    	try { socket.send(data); } catch(exp) { console.log('* Socket Exception: ' + exp.message); } 
+    	try {
+            socket.emit('message',data);
+        } catch(exp) {
+            console.log('* Socket Exception: ' + exp.message);
+        }
     };
 };

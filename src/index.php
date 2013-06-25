@@ -30,12 +30,12 @@
 </div>
 
 <!-- The chat box -->
-<div id="chat" title="Chat">
-	<!-- All messages are displayed here -->
+<!--<div id="chat" title="Chat" style="display:none;">
 	<div id="messages"></div>
-	<!-- The text box to send a message -->
-	<div id="addMessage"><input type="text" style="width:284px; height:30px; bottom:1px; opacity:0.8;" id="chatTextBox" class='textBox'></div>
-</div>
+	<div id="addMessage">
+	    <input type="text" style="width:284px; height:30px; bottom:1px; opacity:0.8;" id="chatTextBox" class='textBox'>
+	</div>
+</div> -->
 
 <!-- Console. -->
 <div id='serverOutput'>
@@ -51,11 +51,11 @@
 <!-- The footer. -->
 <div id="footer">
 	<div id='about'>
-	<a href='http://www.harrynorthover.com' target='_blank'><font style='opacity:0.7'>Designed &amp; Developed by </font>Harry Northover</a>
+	<a href='#comingsoon' target='_blank'><font style='opacity:0.7'>Designed &amp; Developed by </font>North Point Interactive</a>
 	</div>
 	<div id='key'>
 	<img src="../assets/key.png" style='float:right; margin-right:5px;'></div>
-	<input type="text" id="nickname" value="Enter a nickname and press enter..." >
+	<!--<input type="text" id="nickname" value="Enter a nickname and press enter..." >-->
 	<div id='currentUsers'> 0 </div>
 	<div id='serverError'> Disconnected! </div>
 </div>

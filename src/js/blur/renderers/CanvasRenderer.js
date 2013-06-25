@@ -86,7 +86,7 @@ BLUR.CanvasRenderer = function ( scene, camera ) {
 			_ctx.beginPath();
 			_ctx.arc( x, y, particle.radius, 0, Math.PI * 2, true );
 			_ctx.closePath();
-			_ctx.fillStyle = particle.material.toString();
+			_ctx.fillStyle = "rgba(" + particle.material.color.r + "," + particle.material.color.g + "," + particle.material.color.b + "," + particle.material.alpha + ")"; //particle.material.toString();
 			_ctx.fill();
 		}
 	};
@@ -100,7 +100,7 @@ BLUR.CanvasRenderer = function ( scene, camera ) {
 		_ctx.beginPath();
 		_ctx.moveTo(points[0].x, points[0].y);
 		_ctx.lineTo(points[1].x, points[1].y);
-		_ctx.strokeStyle = line.material.toString();
+		_ctx.strokeStyle = "rgba(" + line.material.color.r + "," + line.material.color.g + "," + line.material.color.b + "," + line.material.alpha + ")";
 		_ctx.stroke();
 	};
 

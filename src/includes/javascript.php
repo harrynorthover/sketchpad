@@ -31,6 +31,7 @@
 <script type="text/javascript" src="js/external/modernizr-1.6.min.js"></script>
 
 <!-- Include the WebSocket shit. -->
+<script type="text/javascript" src="http://localhost:8002/socket.io/socket.io.js"></script>
 <script type="text/javascript" src="js/network.js"></script>
 <!-- Include all the console functionality. -->
 <script type="text/javascript" src="js/console.js"></script>
